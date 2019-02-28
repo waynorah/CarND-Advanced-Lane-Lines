@@ -106,15 +106,25 @@ I implemented below helper functions to generate a binary image with various thr
 
 
 src = np.float32(
+
     [[(img_size[0] / 2) - 55, img_size[1] / 2 + 100],
+    
     [((img_size[0] / 6) - 10), img_size[1]],
+    
     [(img_size[0] * 5 / 6) + 60, img_size[1]],
+    
     [(img_size[0] / 2 + 55), img_size[1] / 2 + 100]])
+    
 dst = np.float32(
+
     [[(img_size[0] / 4), 0],
+    
     [(img_size[0] / 4), img_size[1]],
+    
     [(img_size[0] * 3 / 4), img_size[1]],
+    
     [(img_size[0] * 3 / 4), 0]])
+    
     
     
 2) Pass src & dst together with targeted binary image (img) to function warped()
@@ -210,16 +220,25 @@ Here are the main steps I used in my implementation:
 --- 
 
 1）Define conversion rate in x and y from pixels space to meters
+
 2）Change the given lane coordinates (ploty, left_fitx, right_fitx - simulated in previous step) in pixel space to meter space
+
 3）Pass the new coordinates (in meter space) to np.polyfit() to fit second order polynomials for left & right line
+
 4）Use the mathematic equation defined in link to calculate the left & right curvature radius (left_curverad, right_curverad) of the lane points whose y-value are correspondent to the bottom of the image.
+
 5) Take the average of left_curverad & right_curverad as final radius of curvature
+
 6) Calculate the position of left line & right lane nearest to the camera then take the average as the center of the 2 lanes (position)
+
 7) Calculate the distance from center of the lane (position) to center of the image.
+
 
 measure_curvature_radius_position(): calculate radius of curvature & the relative position (distance from center) from simulated lane coordinates
 
+
 add_radius_distance(): combine the calculated information to the image being processed
+
 
 
 
