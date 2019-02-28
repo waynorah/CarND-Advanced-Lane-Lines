@@ -33,15 +33,15 @@ Here are the steps I used when calculating the matrix and distortion coefficient
    * Call cv2.drawChessboardCorners to draw the lines connnecting the detected chessboard corners
    * Save the image with detected corners (in /output_images/ folder)
 
-4) Apply camera calibration (by calling cv2.calibrateCamera) with the imgpoints & objpoints taken above to get the matrix (mtx) and distortion coefficients (dist) of the camera
+4） Apply camera calibration (by calling cv2.calibrateCamera) with the imgpoints & objpoints taken above to get the matrix (mtx) and distortion coefficients (dist) of the camera
 
-5) Save the matrix (mtx) and distortion coefficients (dist) to local file (using pickle) for later use
+5） Save the matrix (mtx) and distortion coefficients (dist) to local file (using pickle) for later use
 
-6) Load the saved data (mtx, dist) to avoid running the calibration from the beginning when restarting kernel, etc
+6） Load the saved data (mtx, dist) to avoid running the calibration from the beginning when restarting kernel, etc
 
-7) Call cv2.undistort to undistort each image with calibrated data (mtx & dist)
+7） Call cv2.undistort to undistort each image with calibrated data (mtx & dist)
 
-8) Save the undistorted images (in /output_images/ folder)
+8） Save the undistorted images (in /output_images/ folder)
 
 
 1.2 Provide an example of a distortion corrected calibration image.
