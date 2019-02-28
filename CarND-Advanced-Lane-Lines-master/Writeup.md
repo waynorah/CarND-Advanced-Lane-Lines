@@ -16,29 +16,35 @@ The goals / steps of this project are the following:
 * Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
 
 
-Camera Calibration
+1 Camera Calibration
 ---
 
-1. Briefly state how you computed the camera matrix and distortion coefficients.
+1.1 Briefly state how you computed the camera matrix and distortion coefficients.
 Here are the steps I used when calculating the matrix and distortion coefficients for camera calibration.
 
 1）Prepare a replicated array of coordinates (objp) with specific size (nx = 9, ny = 6) to handle object points
+
 2）Prepare the arrays to save image points (imgpoints) & object points (objpoints)
+
 3）Apply following processes to each calibration image (calibration*.jpg)
    * Change image to grayscale
    * Call cv2.findChessboardCorners to find the chessboard corners
-   * If it detects the calibration image successfully, add (append) the detected corners as image points together with a copy of "objp" as        object points
+   * Add (append) the detected corners as image points together with a copy of "objp" as object points
    * Call cv2.drawChessboardCorners to draw the lines connnecting the detected chessboard corners
    * Save the image with detected corners (in /output_images/ folder)
 
 4) Apply camera calibration (by calling cv2.calibrateCamera) with the imgpoints & objpoints taken above to get the matrix (mtx) and distortion coefficients (dist) of the camera
+
 5) Save the matrix (mtx) and distortion coefficients (dist) to local file (using pickle) for later use
+
 6) Load the saved data (mtx, dist) to avoid running the calibration from the beginning when restarting kernel, etc
+
 7) Call cv2.undistort to undistort each image with calibrated data (mtx & dist)
+
 8) Save the undistorted images (in /output_images/ folder)
 
 
-2. Provide an example of a distortion corrected calibration image.
+1.2 Provide an example of a distortion corrected calibration image.
 
 The output images with detected corners and undistorted images are saved in following path:
 
@@ -73,23 +79,26 @@ Undistorted image:
 https://view5639f7e7.udacity-student-workspaces.com/view/CarND-Advanced-Lane-Lines/output_images/undistorted_test1.jpg
 
 
-
-Use color transforms, gradients or other methods to create a thresholded binary image
+2 Use color transforms, gradients or other methods to create a thresholded binary image
 ---
-
 
 I implemented below helper functions to generate a binary image with various thresholds of color & gradient:
 
-abs_sobel_thresh(): create a binary image with the given sobel kernel size and threshold values of gradient (on x & y orientation)
-mag_thresh(): create a binary image with the given sobel kernel size and threshold values of gradient magnitude
-dir_threshold(): create a binary image with the given sobel kernel size and threshold values of gradient direction
-color_thresh(): create a binary image with a given range of color
-hls_select(): create a binary image with the threshold of S-channel on HLS
-combined_thresh(): create a binary image by combining several thresholds
+* abs_sobel_thresh(): create a binary image with the given sobel kernel size and threshold values of gradient (on x & y orientation)
+
+* mag_thresh(): create a binary image with the given sobel kernel size and threshold values of gradient magnitude
+
+* dir_threshold(): create a binary image with the given sobel kernel size and threshold values of gradient direction
+
+* color_thresh(): create a binary image with a given range of color
+
+* hls_select(): create a binary image with the threshold of S-channel on HLS
+
+* combined_thresh(): create a binary image by combining several thresholds
 
 
 
-Performed a perspective transform and provide an example of a transformed image
+3 Performed a perspective transform and provide an example of a transformed image
 ---
 
 
@@ -111,8 +120,10 @@ dst = np.float32(
 2) Pass src & dst together with targeted binary image (img) to function warped()
 
 3) Inside warped():
-   Call cv2.getPerspectiveTransform(src, dst) to calculate the transform matrix (M)
-   Call cv2.warpPerspective() to execute perpective transform with the calculated matrix (M)
+
+   * Call cv2.getPerspectiveTransform(src, dst) to calculate the transform matrix (M)
+   
+   * Call cv2.warpPerspective() to execute perpective transform with the calculated matrix (M)
    
 Here are some examples of transformed image:
 
@@ -125,7 +136,7 @@ Here are some examples of transformed image:
  https://view5639f7e7.udacity-student-workspaces.com/view/CarND-Advanced-Lane-Lines/output_images/warped_test2.jpg
  
  
-Identified lane-line pixels and fit their positions with a polynomial
+4 Identified lane-line pixels and fit their positions with a polynomial
 --- 
 
 I implemented below search methods to identify lane-line:
@@ -137,26 +148,42 @@ Here are the main steps I used in my implementation:
 
 
 (1) Find lane pixels
+
     * Take a histogram of the bottom half of the image
+    
     * Find the peak of the left and right halves of the histogram as the starting point for the left and right lines
+    
     * Define the sliding windows (with optimized size) & step through each window as follows:
+    
         Search for all nonzero pixels within the window
+        
         Add/Append the indices of the detected pixels to the lists
+        
         If the number of detected pixels exceed the threshold (minpix), recenter next window on the mean position
+        
     * Concatenate the arrays of indices which previously was a list of lists of pixels
+    
     * Extract left and right line pixel positions
 
 (2) Search around to detect lane pixels & fit the detected lane with color lines
 
     * With search method 1:
+    
         Find lane pixels as described in (1) for every frame
+        
         Fit a polynomial from detected pixels
         
+        
     * With search method 2:
+    
         Load the saved parameters of last frame. If no data is saved (first frame), create it as follows:
+        
             a. Find lane pixels as described in (1)
+            
             b. Calculate & save polynomial fit parameters for left & right lane
+            
             c. Load the saved parameters
+            
         Set the area of search based on activated x-values within the +/- margin of polynomial function
         
         Search for all nonzero pixels within the area
@@ -166,17 +193,20 @@ Here are the main steps I used in my implementation:
         Check whether the detected lines is suitable for further processing or not by following conditions:
             
             -Average x-value of both lines are within the image (smaller than 1280)
+            
             -Average distance between right & left lane is within suitable range (bigger than 680 and smaller than 820)
        
        If not suitable (sometimes happen), apply search method 1 for current frame
 
 
 (3) Highlight the detected lane lines & moving area with colors
+
     * Define the coordinates for left lane (left_line_pts), right lane (right_line_pts) & middle area between the 2 lanes (middle_area)
+    
     * Call cv2.fillPoly() to highlight specified areas with specific colors (Red & Green)
 
 
-Calculated the radius of curvature of the lane and the position of the vehicle with respect to center
+5 Calculated the radius of curvature of the lane and the position of the vehicle with respect to center
 --- 
 
 1）Define conversion rate in x and y from pixels space to meters
