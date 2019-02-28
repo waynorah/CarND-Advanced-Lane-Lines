@@ -227,11 +227,11 @@ Here are the main steps I used in my implementation:
 
 4）Use the mathematic equation defined in link to calculate the left & right curvature radius (left_curverad, right_curverad) of the lane points whose y-value are correspondent to the bottom of the image.
 
-5) Take the average of left_curverad & right_curverad as final radius of curvature
+5）Take the average of left_curverad & right_curverad as final radius of curvature
 
-6) Calculate the position of left line & right lane nearest to the camera then take the average as the center of the 2 lanes (position)
+6）Calculate the position of left line & right lane nearest to the camera then take the average as the center of the 2 lanes (position)
 
-7) Calculate the distance from center of the lane (position) to center of the image.
+7）Calculate the distance from center of the lane (position) to center of the image.
 
 
 measure_curvature_radius_position(): calculate radius of curvature & the relative position (distance from center) from simulated lane coordinates
